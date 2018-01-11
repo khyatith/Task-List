@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/khyatith/Task-List#readme",
   "dependencies": {
-    "create-react-app": "^1.4.3"
+    "create-react-app": "^1.4.3",
+    "ramda": "^0.25.0"
   }
 }
