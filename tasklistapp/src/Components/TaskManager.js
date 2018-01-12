@@ -46,6 +46,7 @@ class TaskManager extends Component {
         // 4. Improve css
         // 5. Write Tests
         const { tasks } = this.props.tasks;
+        const hasTasks = tasks && tasks.length !== 0 ? true : false;
         return (
             <div className="container layout">
                 <div className="row header-row">
@@ -60,7 +61,7 @@ class TaskManager extends Component {
                     </div>
                 </div>
                 {
-                    tasks.length !== 0 ?
+                    hasTasks ?
                     tasks.map( (task, i) => {
                         return (
                             <div className="row" key={ i }>
