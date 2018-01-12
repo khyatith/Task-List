@@ -27,5 +27,20 @@ header {
 }
 
 .card {
-	height: 50px;
+	height: 200px;
+}
+
+.fa.fa-trash-o {
+	float: right;
+}
+
+i.fa {
+	-webkit-transition: margin 0.5s ease-out;
+    -moz-transition: margin 0.5s ease-out;
+    -o-transition: margin 0.5s ease-out;
+}
+
+i.fa:hover {
+	cursor: pointer;
+	margin-top: 2px;
 }
