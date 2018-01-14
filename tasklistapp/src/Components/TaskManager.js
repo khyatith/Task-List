@@ -8,25 +8,33 @@ import Task from './Task';
 class TaskManager extends Component {
 
     state = {
-        isDisabledSave: true
+        isDisabledSave: true,
+        currentTasks: []
     };
 
     componentWillMount() {
         this.props.taskActions.getAllTasks();
+        this.setState({ currentTasks: this.props.tasks });
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({ currentTasks: nextProps.tasks });
     }
 
     createNewEmptyTask = () => {
         this.setState({ isDisabledSave: false });
-        const { tasks } = this.props.tasks;
-        const index = tasks.length ? tasks.length : 0;
-        this.props.taskActions.createNewEmptyTask(index);
+        const oldTasks = this.state.currentTasks;
+        const index = oldTasks.tasks.length ? oldTasks.tasks.length : 0;
+        const newTask = { title: '', isNew: true, index: index};
+        oldTasks.tasks.unshift(newTask);
+        this.setState({ currentTasks: oldTasks });
     }
 
     saveTasks = () => {
-        const { tasks } = this.props.tasks;
+        const { tasks } = this.state.currentTasks;
         let hasEmptyTask = false;
         tasks.map(task => {
-            if(task.title == null) {
+            if(task.title === '') {
                 hasEmptyTask = true;
                 return hasEmptyTask;
             } else {
@@ -37,7 +45,7 @@ class TaskManager extends Component {
         if (hasEmptyTask) {
             this.props.taskActions.receiveNotifications('Cannot create an Empty Task', 'danger');
         } else {
-            this.setState({ isDisabledSave: true });
+            this.setState({ isDisabledSave: true, isEditTitle: false });
             this.props.taskActions.saveTasks(tasks);
         }
     }
@@ -47,7 +55,7 @@ class TaskManager extends Component {
     }
 
     deleteSelectedTask = (task) => {
-        const { tasks } = this.props.tasks;
+        const { tasks } = this.state.currentTasks;
         const newTasks = tasks.filter(oldTask => oldTask.index !== task.index);
         this.props.taskActions.saveTasks(newTasks);
     }
@@ -57,10 +65,23 @@ class TaskManager extends Component {
         this.props.taskActions.resetErrorNotification();
     }
 
+    editTitle = (index) => {
+        const { tasks } = this.state.currentTasks;
+        tasks.map(task => {
+            if(task.index === index) {
+                task.isNew = true;
+            }
+            return task;
+        });
+
+        this.setState({ isDisabledSave: false });
+    }
+
     render() {
         //TODO:
         // 5. Write Tests
-        const { tasks, notification, level } = this.props.tasks;
+        const { notification, level } = this.props.tasks;
+        const { isDisabledSave, currentTasks } = this.state;
         const alertClass = `alert alert-${level} alert-dismissable`;
         return (
             <div className="container layout">
@@ -71,7 +92,7 @@ class TaskManager extends Component {
                     <div className="col-md-4">
                         <div className="btn-toolbar">
                             <button className="btn btn-secondary" type="button" onClick={ this.createNewEmptyTask }>Add Task</button>
-                            <button className="btn btn-success" disabled={ this.state.isDisabledSave } onClick={ this.saveTasks }>Save</button>
+                            <button className="btn btn-success" disabled={ isDisabledSave } onClick={ this.saveTasks }>Save</button>
                         </div>
                     </div>
                 </div>
@@ -83,7 +104,7 @@ class TaskManager extends Component {
                     </div>
                 }
                 {
-                    tasks.map( (task) => {
+                    currentTasks.tasks.map( (task) => {
                         const { index } = task;
                         return (
                             <div className="row" key={ index }>
@@ -94,6 +115,7 @@ class TaskManager extends Component {
                                         updateNewTaskTitle={ this.updateNewTaskTitle }
                                         newTask={ this.state.addNewTask }
                                         deleteSelectedTask={ this.deleteSelectedTask }
+                                        editTitle={ this.editTitle }
                                     />
                                 </div>
                             </div>

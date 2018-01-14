@@ -44,13 +44,9 @@ export default function tasks(state = initialState, action) {
 
         case REPORT_NOTIFICATION:
             const { message, level } = action;
-            let newMessage = message;
-            if(level === 'danger') {
-                newMessage = newMessage.concat('. Please refresh the page !');
-            }
             return {
                 ...state,
-                notification: newMessage,
+                notification: message,
                 level: level
             };
 
