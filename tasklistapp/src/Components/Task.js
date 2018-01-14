@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 const Task = ({ task, index, updateNewTaskTitle, deleteSelectedTask }) => {
 
     const updateTitle = (e) => {
+        e.preventDefault();
         updateNewTaskTitle(e.target.value, index);
     };
 
     const deleteTask = (e) => {
-        deleteSelectedTask(task, index);
+        e.preventDefault();
+        deleteSelectedTask(task);
     }
 
     const { isNew, title } = task;
@@ -21,7 +23,7 @@ const Task = ({ task, index, updateNewTaskTitle, deleteSelectedTask }) => {
                             isNew ?
                             <input className="form-control input-lg" type="text" placeholder="Enter Task Name" onChange={ updateTitle } autoFocus />
                             :
-                            <h2>{ title }</h2>
+                            <h2 className="taskTitle">{ title }</h2>
                         }
                     </div>
                     <div className="col-md-2 trash-icon">

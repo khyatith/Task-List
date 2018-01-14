@@ -6,12 +6,13 @@ header {
 .layout {
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 1200px;
+	max-width: 1000px;
 	position: relative;
 }
 
 .header-row {
 	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
 .btn-toolbar {
@@ -23,7 +24,7 @@ header {
 }
 
 .btn-secondary {
-	background-color: #686868;
+	background-color: #A0A0A0;
 }
 
 .card {
@@ -41,9 +42,28 @@ i.fa {
 	-webkit-transition: margin 0.5s ease-out;
     -moz-transition: margin 0.5s ease-out;
     -o-transition: margin 0.5s ease-out;
+    color: #A0A0A0;
 }
 
 i.fa:hover {
 	cursor: pointer;
 	margin-top: 2px;
+}
+
+.alert.alert-dismissable {
+	position: absolute;
+	right: 10px;
+	top: 500px;
+	width: 500px;
+	transition: all .75s ease;
+	z-index: 1000;
+}
+
+
+.taskTitle {
+	color: #A0A0A0;
+}
+
+.headerTitle {
+	color: #686868;
 }

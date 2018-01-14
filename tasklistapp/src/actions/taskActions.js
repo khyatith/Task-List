@@ -6,8 +6,18 @@ export function getAllTasks() {
             method: 'GET',
             mode: 'cors'
         })
-        .then(response => response.json())
-        .then(json => dispatch(receiveTasks(json)));
+        .then(response => {
+            return response.json();
+        })
+        .then(json => {
+            if(json.error) {
+                throw json.error;
+            }
+            dispatch(receiveTasks(json))
+        })
+        .catch(error => {
+            dispatch(receiveNotifications(error, 'danger'))
+        });
     }
 };
 
@@ -26,8 +36,16 @@ export function receiveTasks(json) {
     };
 }
 
-export function createNewTask() {
-    return { type: types.ADD_TASK };
+export function receiveNotifications(message, level) {
+    return {
+        type: types.REPORT_NOTIFICATION,
+        message,
+        level
+    };
+}
+
+export function createNewEmptyTask(index) {
+    return { type: types.ADD_TASK, index };
 };
 
 export function saveTasks(taskObj) {
@@ -43,14 +61,29 @@ export function saveTasks(taskObj) {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(json => dispatch(saveFinalTasks(json)));
+        .then(response => {
+            return response.json();
+        })
+        .then(json => {
+            if(json.error) {
+                throw json.error;
+            }
+            dispatch(saveFinalTasks(json));
+        })
+        .catch(error => dispatch(receiveNotifications(error, 'danger')));
     }
-}
+};
 
 export function saveFinalTasks(json) {
     return {
         type: types.SAVE_TASKS,
         tasks: json.tasks
     }
-}
+};
+
+export function resetErrorNotification() {
+    return {
+        type: types.RESET_NOTIFICATION
+    }
+};
+

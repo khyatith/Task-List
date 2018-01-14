@@ -15,60 +15,82 @@ class TaskManager extends Component {
         this.props.taskActions.getAllTasks();
     }
 
-    createNewTask = () => {
+    createNewEmptyTask = () => {
         this.setState({ isDisabledSave: false });
-        this.props.taskActions.createNewTask();
+        const { tasks } = this.props.tasks;
+        const index = tasks.length ? tasks.length : 0;
+        this.props.taskActions.createNewEmptyTask(index);
     }
 
     saveTasks = () => {
         const { tasks } = this.props.tasks;
+        let hasEmptyTask = false;
         tasks.map(task => {
-            task.isNew = false;
-            return task;
+            if(task.title == null) {
+                hasEmptyTask = true;
+                return hasEmptyTask;
+            } else {
+                task.isNew = false;
+                return task;
+            }
         });
-        this.props.taskActions.saveTasks(tasks);
+        if (hasEmptyTask) {
+            this.props.taskActions.receiveNotifications('Cannot create an Empty Task', 'danger');
+        } else {
+            this.setState({ isDisabledSave: true });
+            this.props.taskActions.saveTasks(tasks);
+        }
     }
 
     updateNewTaskTitle = (title, index) => {
         this.props.taskActions.editTitle(title, index);
     }
 
-    deleteSelectedTask = (task, index) => {
+    deleteSelectedTask = (task) => {
         const { tasks } = this.props.tasks;
-        tasks.splice(index, 1);
-        this.props.taskActions.saveTasks(tasks);
+        const newTasks = tasks.filter(oldTask => oldTask.index !== task.index);
+        this.props.taskActions.saveTasks(newTasks);
+    }
+
+    closeNotification = (e) => {
+        e.preventDefault();
+        this.props.taskActions.resetErrorNotification();
     }
 
     render() {
-        //TODO: 1. find out a way to show errors
-        // 2. show an alert when the tasks are saved
-        // 3. show an alert when the tasks are deleted
-        // 4. Improve css
+        //TODO:
         // 5. Write Tests
-        const { tasks } = this.props.tasks;
-        const hasTasks = tasks && tasks.length !== 0 ? true : false;
+        const { tasks, notification, level } = this.props.tasks;
+        const alertClass = `alert alert-${level} alert-dismissable`;
         return (
             <div className="container layout">
                 <div className="row header-row">
                     <div className="col-md-8">
-                        <h2>Tasks</h2>
+                        <h2 className="headerTitle">Tasks</h2>
                     </div>
                     <div className="col-md-4">
                         <div className="btn-toolbar">
-                            <button className="btn btn-secondary" type="button" onClick={ this.createNewTask }>Add Task</button>
+                            <button className="btn btn-secondary" type="button" onClick={ this.createNewEmptyTask }>Add Task</button>
                             <button className="btn btn-success" disabled={ this.state.isDisabledSave } onClick={ this.saveTasks }>Save</button>
                         </div>
                     </div>
                 </div>
                 {
-                    hasTasks ?
-                    tasks.map( (task, i) => {
+                    notification &&
+                    <div className={alertClass}>
+                        <button type="button" className="close" data-dismiss="alert" aria-label="close" onClick={ this.closeNotification }>×</button>
+                        <strong>{ notification }</strong>
+                    </div>
+                }
+                {
+                    tasks.map( (task) => {
+                        const { index } = task;
                         return (
-                            <div className="row" key={ i }>
+                            <div className="row" key={ index }>
                                 <div className="col-md-12">
                                     <Task
                                         task={ task }
-                                        index={ i }
+                                        index={ index }
                                         updateNewTaskTitle={ this.updateNewTaskTitle }
                                         newTask={ this.state.addNewTask }
                                         deleteSelectedTask={ this.deleteSelectedTask }
@@ -77,10 +99,6 @@ class TaskManager extends Component {
                             </div>
                         );
                     })
-                    :
-                    <div className="alert alert-info">
-                        There are no Tasks yet! Click on Add Task to create some tasks of your own
-                    </div>
                 }
             </div>
         );

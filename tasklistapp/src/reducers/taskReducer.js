@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import { FETCH_TASKS, ADD_TASK, EDIT_TASK, SAVE_TASKS } from '../actions/actionTypes';
+import { FETCH_TASKS, ADD_TASK, EDIT_TASK, SAVE_TASKS, REPORT_NOTIFICATION, RESET_NOTIFICATION } from '../actions/actionTypes';
 import _ from 'lodash';
 
 export default function tasks(state = initialState, action) {
@@ -7,14 +7,15 @@ export default function tasks(state = initialState, action) {
     switch (action.type) {
 
         case FETCH_TASKS:
-            const allTasks = action.tasks ? action.tasks : [];
+            const allTasks = action.tasks;
             return {
                 tasks: allTasks,
                 state
             }
 
         case ADD_TASK:
-            const newTask = { title: 'NewTask', isNew: true };
+            const i = action.index;
+            const newTask = { title: null, isNew: true, index: i};
             const currentTasks = _.cloneDeep(state);
             currentTasks.tasks.unshift(newTask);
             return {
@@ -25,7 +26,8 @@ export default function tasks(state = initialState, action) {
         case EDIT_TASK:
             const oldTasks =  _.cloneDeep(state);
             const { title, index } = action;
-            oldTasks.tasks[index].title = title;
+            const targetTask = oldTasks.tasks.find(task => task.index === index);
+            targetTask.title = title;
             return {
                 ...state,
                 ...oldTasks
@@ -35,7 +37,28 @@ export default function tasks(state = initialState, action) {
             const newTasks = action.tasks;
             return {
                 ...state,
-                tasks: newTasks
+                tasks: newTasks,
+                notification: 'Tasks Saved Successfully',
+                level: 'success'
+            }
+
+        case REPORT_NOTIFICATION:
+            const { message, level } = action;
+            let newMessage = message;
+            if(level === 'danger') {
+                newMessage = newMessage.concat('. Please refresh the page !');
+            }
+            return {
+                ...state,
+                notification: newMessage,
+                level: level
+            };
+
+        case RESET_NOTIFICATION:
+            return {
+                ...state,
+                notification: '',
+                level: ''
             }
 
         default:
