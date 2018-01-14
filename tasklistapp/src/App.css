@@ -39,9 +39,6 @@ header {
 }
 
 i.fa {
-	-webkit-transition: margin 0.5s ease-out;
-    -moz-transition: margin 0.5s ease-out;
-    -o-transition: margin 0.5s ease-out;
     color: #A0A0A0;
 }
 
