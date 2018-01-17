@@ -21,6 +21,7 @@ class TaskManager extends Component {
         this.setState({ currentTasks: nextProps.tasks });
     }
 
+    //Create a new empty task
     createNewEmptyTask = () => {
         this.setState({ isDisabledSave: false });
         const oldTasks = this.state.currentTasks;
@@ -30,6 +31,7 @@ class TaskManager extends Component {
         this.setState({ currentTasks: oldTasks });
     }
 
+    //Saves all the tasks
     saveTasks = () => {
         const { tasks } = this.state.currentTasks;
         let hasEmptyTask = false;
@@ -50,10 +52,12 @@ class TaskManager extends Component {
         }
     }
 
+    //Update the new task title
     updateNewTaskTitle = (title, index) => {
         this.props.taskActions.editTitle(title, index);
     }
 
+    //Delete tasks
     deleteSelectedTask = (task) => {
         const { tasks } = this.state.currentTasks;
         const newTasks = tasks.filter(oldTask => oldTask.index !== task.index);
@@ -65,6 +69,7 @@ class TaskManager extends Component {
         this.props.taskActions.resetErrorNotification();
     }
 
+    //Edit the title of the task when the task is already created
     editTitle = (index) => {
         const { tasks } = this.state.currentTasks;
         tasks.map(task => {
@@ -78,8 +83,6 @@ class TaskManager extends Component {
     }
 
     render() {
-        //TODO:
-        // 5. Write Tests
         const { notification, level } = this.props.tasks;
         const { isDisabledSave, currentTasks } = this.state;
         const alertClass = `alert alert-${level} alert-dismissable`;
