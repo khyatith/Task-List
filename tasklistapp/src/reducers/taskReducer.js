@@ -1,5 +1,5 @@
 import initialState from './initialState';
-import { FETCH_TASKS, ADD_TASK, EDIT_TASK, SAVE_TASKS, REPORT_NOTIFICATION, RESET_NOTIFICATION } from '../actions/actionTypes';
+import { FETCH_TASKS, EDIT_TASK, SAVE_TASKS, REPORT_NOTIFICATION, RESET_NOTIFICATION } from '../actions/actionTypes';
 import _ from 'lodash';
 
 export default function tasks(state = initialState, action) {
@@ -12,16 +12,6 @@ export default function tasks(state = initialState, action) {
                 tasks: allTasks,
                 state
             }
-
-        case ADD_TASK:
-            const i = action.index;
-            const newTask = { title: null, isNew: true, index: i};
-            const currentTasks = _.cloneDeep(state);
-            currentTasks.tasks.unshift(newTask);
-            return {
-                ...state,
-                ...currentTasks
-            };
 
         case EDIT_TASK:
             const oldTasks =  _.cloneDeep(state);

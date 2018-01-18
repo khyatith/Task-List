@@ -1,8 +1,9 @@
 import * as types from './actionTypes';
 
+//calls the fetch tasks endpoint
 export function getAllTasks() {
     return dispatch => {
-        return fetch('http://cfassignment.herokuapp.com/diana/tasks', {
+        return fetch('http://cfassignment.herokuapp.com/khyati/tasks', {
             method: 'GET',
             mode: 'cors'
         })
@@ -44,14 +45,11 @@ export function receiveNotifications(message, level) {
     };
 }
 
-export function createNewEmptyTask(index) {
-    return { type: types.ADD_TASK, index };
-};
-
+//calls the save tasks endpoint
 export function saveTasks(taskObj) {
 
     return dispatch => {
-        return fetch('http://cfassignment.herokuapp.com/diana/tasks', {
+        return fetch('http://cfassignment.herokuapp.com/khyati/tasks', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({

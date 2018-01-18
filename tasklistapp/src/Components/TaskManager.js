@@ -12,16 +12,18 @@ class TaskManager extends Component {
         currentTasks: []
     };
 
+    //fetch all tasks when component loads for the first time
     componentWillMount() {
         this.props.taskActions.getAllTasks();
         this.setState({ currentTasks: this.props.tasks });
     }
 
-    componentWillReceiveProps(nextProps){
+    //everytime the props change, update the local state of the component
+    componentWillReceiveProps(nextProps) {
         this.setState({ currentTasks: nextProps.tasks });
     }
 
-    //Create a new empty task
+    //Create a new empty task when a new task is added
     createNewEmptyTask = () => {
         this.setState({ isDisabledSave: false });
         const oldTasks = this.state.currentTasks;
@@ -31,7 +33,10 @@ class TaskManager extends Component {
         this.setState({ currentTasks: oldTasks });
     }
 
-    //Saves all the tasks
+    //Saves all the tasks through the api endpoint
+    //this also checks for empty tasks
+    //If a user tries to create an empty task, an error notification will be thrown
+    //This will also set the isNew variable of all the tasks as false
     saveTasks = () => {
         const { tasks } = this.state.currentTasks;
         let hasEmptyTask = false;
@@ -58,18 +63,20 @@ class TaskManager extends Component {
     }
 
     //Delete tasks
+    //Since there is no endpoint for deleting, I am taking all the tasks except the deleted one and calling post endpoint again
     deleteSelectedTask = (task) => {
         const { tasks } = this.state.currentTasks;
         const newTasks = tasks.filter(oldTask => oldTask.index !== task.index);
         this.props.taskActions.saveTasks(newTasks);
     }
 
+    //This is used for clearing the notification once the x is clicked
     closeNotification = (e) => {
         e.preventDefault();
         this.props.taskActions.resetErrorNotification();
     }
 
-    //Edit the title of the task when the task is already created
+    //When the task has been created and the user wants to edit the title, this method will be called
     editTitle = (index) => {
         const { tasks } = this.state.currentTasks;
         tasks.map(task => {
